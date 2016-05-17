@@ -23,8 +23,7 @@ and avoid confusion.  The components are as follows:
 
 const express = require('express');
 const app = express();
-
-const port = process.env.PORT || 5000;
+const LEX = require('letsencrypt-express');
 
 require('./config/middleware.js')(app, express);
 require('./config/routes.js')(app, express);
@@ -32,9 +31,23 @@ require('./config/routes.js')(app, express);
 // force should be false/ommitted in production code
 const init = require('./db/dummyData');
 
-init().then(() => {
-  console.log(`Server is listening on port ${port}`);
-  app.listen(port);
+var lex = LEX.create({
+  configDir: require('os').homedir() + '/letsencrypt/etc',
+  approveRegistration: function (hostname, cb) {
+    cb(null, {
+      domains: [hostname],
+      email: 'jarrett.gliner@gmail.com',
+      agreeTos: true
+    });
+  }
 });
 
+lex.onRequest = app;
+
+init().then(() => {
+  lex.listen([80], [443, 5001], function () {
+    var protocol = ('requestCert' in this) ? 'https': 'http';
+    console.log("Listening at " + protocol + '://localhost:' + this.address().port);
+  });
+});
 module.exports = app;
