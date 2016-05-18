@@ -73,7 +73,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-babel');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-browserify');
-  grunt.loadNpmTasks('grunt-bg-shell');
 
   grunt.registerTask('server-dev', function(target) {
     var nodemon = grunt.util.spawn({
@@ -101,12 +100,6 @@ module.exports = function(grunt) {
       grunt.task.run(['server-dev']);
     }
   });
-
-  grunt.registerTask('live', [
-    'babel',
-    'browserify',
-    'upload',
-  ]);
 
   grunt.registerTask('deploy', [
     'test',

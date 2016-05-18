@@ -23,6 +23,10 @@ and avoid confusion.  The components are as follows:
 
 const express = require('express');
 const app = express();
+
+const http = require('http');
+const https = require('spdy');
+
 const LEX = require('letsencrypt-express');
 
 require('./config/middleware.js')(app, express);
@@ -31,23 +35,26 @@ require('./config/routes.js')(app, express);
 // force should be false/ommitted in production code
 const init = require('./db/dummyData');
 
-var lex = LEX.create({
-  configDir: require('os').homedir() + '/letsencrypt/etc',
-  approveRegistration: function (hostname, cb) {
-    cb(null, {
-      domains: [hostname],
-      email: 'jarrett.gliner@gmail.com',
-      agreeTos: true
-    });
-  }
-});
-
-lex.onRequest = app;
-
 init().then(() => {
-  lex.listen([80], [443, 5001], function () {
-    var protocol = ('requestCert' in this) ? 'https': 'http';
-    console.log("Listening at " + protocol + '://localhost:' + this.address().port);
+  const lex = LEX.create({
+    configDir: require('os').homedir() + '/letsencrypt/etc',
+    onRequest: app,
   });
+
+  function redirectHttp() {
+    http.createServer(LEX.createAcmeResponder(lex, function redirectHttps(req, res) {
+      res.setHeader('Location', 'https://' + req.headers.host + req.url);
+      res.statusCode = 302;
+      res.end('<!-- Hello Developer Person! Please use HTTPS instead -->');
+    })).listen(80);
+  }
+
+  function serveHttps() {
+    https.createServer(lex.httpsOptions, LEX.createAcmeResponder(lex, app)).listen(443);
+  }
+
+  redirectHttp();
+  serveHttps();
 });
+
 module.exports = app;
