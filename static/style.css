@@ -119,11 +119,11 @@ a {
 .diag {
   position: absolute;
   background-color: #A7D2CB;
-  height: 70vh;
+  height: 49rem;
   width: 120vw;
   top: -15rem;
   left: -5rem;
-  transform: rotate(10deg);
+  transform: rotate(15deg);
   z-index: 1
 }
 
@@ -149,6 +149,7 @@ a {
   top: 1rem;
   left: 50rem;
   transform: rotate(90deg);
+  opacity: 0.2;
 }
 
 .container {
@@ -467,7 +468,7 @@ a {
   background-position: 0px 5px
 }
 
-/********MEDIA RESPONSIVE*********/
+/********MEDIA RESPONSIVE - WIDTH*********/
 
 @media (max-width: 1400px) {
   /*Login*/
@@ -486,6 +487,17 @@ a {
   }
   .logo {
     margin-right: initial;
+  }
+
+}
+
+@media (max-width: 1100px) {
+
+  /*Landing*/
+
+  .logo {
+    height: 20rem;
+    top: 6rem;
   }
 
 }
@@ -525,16 +537,55 @@ a {
   }
 
   /*Landing*/
+  .diag {
+    transform: initial;
+  }
 
   .logo {
-    height: 10rem;
-    top: 10rem;
+    height: 15rem;
+    top: 5rem;
   }
   .topHeader>p {
     width: 60vw;
   }
+
+}
+
+/********MEDIA RESPONSIVE - HEIGHT*********/
+
+@media (max-height: 900px) {
+
+  .topHeader>h3, .bottomHeader>h3 {
+    font-size: 30px;
+    font-weight: 500;
+  }
+
+  .topHeader>p, .bottomHeader>p {
+    font-weight: 300;
+  }
+ 
   .diag {
-    top: -9rem;
+    height: 50vh;
+    top: initial;
+    transform: initial;
+  }
+
+  .diagTop {
+    height: 40vh;
+    margin-top: 5rem;
+    margin-left: 10vw;
+    top: -8rem;
+  }
+
+  .diagBottom {
+    margin-top: 5vh;
+    margin-left: 10vw;
+  }
+
+  .destButton {
+    float: right;
+    top: 20vh;
+    left: 29.5vw;
   }
 
 }
